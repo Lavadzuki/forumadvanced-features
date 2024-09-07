@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign-in</title>
+    <link rel="stylesheet" href="/static/style.css">
+
+    <link rel="icon" href='/static/img/f.png' type="image/png">
+</head>
+<body>
+<div class="center">
+    <h1 class="register">Login</h1>
+    <form action="/sign-in" method="post">
+        <div class="txt_field">
+            <input type="text" name="email" required>
+            <span></span>
+            <label>Email</label>
+        </div>
+        <div class="txt_field">
+            <input type="password" name="password" required>
+            <span></span>
+            <label>Password</label>
+        </div>
+        
+        <!-- <a href="/github/auth" style="accent-color: #24292e;">
+            <span class="github__link">Login with Github</span>
+        </a> -->
+        <div class='gh-sign-in-button'>
+            <a href="/github/auth" style="text-decoration: none;">
+                <div class="content-wrapper">
+                    <div class='logo-wrapper'>
+                        <img class="github_image" src='https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png' alt="GitHub Logo">
+                    </div>
+                    <span class='text-container'>
+                        <span class="github__link">Login with GitHub</span>
+                    </span>
+                </div>
+            </a>
+        </div>
+        
+        <div class='g-sign-in-button'>
+            <a href="/google/auth" style="text-decoration: none;">
+            <div class=content-wrapper>
+            <div class='logo-wrapper'>  
+              <img class="google_image" src='https://developers.google.com/identity/images/g-logo.png'>
+              </div>  
+              <span class='text-container'> 
+                <span class="google__link">Login with Google</span>
+              </span>
+            </div>  
+            </a>
+        </div>
+
+
+          
+        <input  type="submit" value="Sign in">
+        <div class="signup_link">
+            Not a member? <a href="/sign-up">Sign up</a>
+        </div>
+        <div class="signup_link">
+            Back to welcome page <a href="/welcome">Welcome</a>
+        </div>
+        <div >
+            <script type="text/javascript">
+                if ('{{ .Message}}' != ""){
+                    alert('{{ .Message}}');
+                }
+            </script>
+        </div>
+    </form>
+</div>
+</body>
+</html>
