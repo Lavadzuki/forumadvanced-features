@@ -25,7 +25,9 @@ func (app *App) ratelimiter(next http.Handler) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ip := r.RemoteAddr
 		if !rl.Allow(ip) {
-			http.Error(w, http.StatusText(http.StatusTooManyRequests), http.StatusTooManyRequests)
+			// http.Error(w, http.StatusText(http.StatusTooManyRequests), http.StatusTooManyRequests)
+			pkg.ErrorHandler(w, http.StatusTooManyRequests)
+
 			return
 		}
 		next.ServeHTTP(w, r)

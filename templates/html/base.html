@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum</title>
+
+    <link rel="icon" href='/static/img/f.png' type="image/png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+    <link rel="stylesheet" href="/static/index.css">
+    <link rel="stylesheet" href="/static/utils.css">
+    <link rel="stylesheet" href="/static/style.css">
+
+</head>
+
+<body>
+    <!-- Common Header Section -->
+    <header>
+        <nav>
+            <ul>
+                <li class="header__link"><a href="/filter/created-post">
+                    <i class="fas fa-user header__link"></i>
+                    <span class="nav-item header__link">{{ .User.Username }}</span>
+                </a></li>
+                <li><a href="/filter/liked-post">
+                    <i class="fas fa-heart header__link"></i>
+                    <span class="nav-item header__link">Liked Posts</span>
+                </a></li>
+                <li><a href="/">
+                    <i class="fas fa-tasks header__link"></i>
+                    <span class="nav-item header__link">Posts</span>
+                </a></li>
+                <li><a href="/filter/fantasy">
+                    <i class="fas fa-question-circle header__link"></i>
+                    <span class="nav-item header__link">Fantasy</span>
+                </a></li>
+                <li><a href="/filter/drama">
+                    <i class="fas fa-tv header__link"></i>
+                    <span class="nav-item header__link">Drama</span>
+                </a></li>
+                <li><a href="/filter/comedy">
+                    <i class="fas fa-book header__link"></i>
+                    <span class="nav-item header__link">Comedy</span>
+                </a></li>
+                <li><a href="/filter/adventure">
+                    <i class="fas fa-music header__link"></i>
+                    <span class="nav-item header__link">Adventure</span>
+                </a></li>
+                <li><a href="/filter/romance">
+                    <i class="fas fa-list header__link"></i>
+                    <span class="nav-item header__link">Romance</span>
+                </a></li>
+                <li><a href="/logout/" class="logout">
+                    <i class="fas fa-sign-out-alt header__link"></i>
+                    <span class="nav-item header__link">Logout</span>
+                </a></li>
+                <div class="create_post btn">
+                    <a href="/post/">
+                        <h1 class="posts">Create Post</h1>
+                    </a>
+                </div>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {{ block "content" . }} {{end}}
+    </main>
+
+
+</body>
+</html>

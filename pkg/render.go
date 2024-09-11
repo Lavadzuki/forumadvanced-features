@@ -34,10 +34,9 @@ func RenderTemplate(w http.ResponseWriter, template string, data models.Data) {
 		return
 	}
 	buf := new(bytes.Buffer)
-	err := t.Execute(buf, data)
+	err := t.Execute(w, data)
 	if err != nil {
-		log.Println(err)
-		ErrorHandler(w, http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	_, err = buf.WriteTo(w)
 	if err != nil {
@@ -45,20 +44,48 @@ func RenderTemplate(w http.ResponseWriter, template string, data models.Data) {
 		ErrorHandler(w, http.StatusInternalServerError)
 		return
 	}
+
 }
 
 func createTemplate() error {
+	// Load all individual page templates
 	pages, err := filepath.Glob("./templates/html/*.html")
 	if err != nil {
 		return err
 	}
+
+	// Define the pages that do NOT need the base layout
+	standalonePages := map[string]bool{
+		"signin.html":        true,
+		"signup.html":        true,
+		"createpost.html":    true,
+		"commentunauth.html": true,
+		"commentview.html":   true,
+		"error.html":         true,
+	}
+
 	for _, page := range pages {
 		name := filepath.Base(page)
-		ts, err := template.New(name).ParseFiles(page)
+
+		var ts *template.Template
+		var err error
+
+		// Check if the page is a standalone page
+		if standalonePages[name] {
+			// Parse without the base layout
+			ts, err = template.ParseFiles(page)
+		} else {
+			// Parse with the base layout
+			ts, err = template.ParseFiles("templates/html/base.html", page)
+		}
+
 		if err != nil {
 			return err
 		}
+
+		// Cache the parsed template
 		templateCache[name] = ts
 	}
+
 	return nil
 }

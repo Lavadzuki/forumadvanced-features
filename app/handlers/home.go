@@ -17,12 +17,7 @@ func (app *App) HomeHandler(w http.ResponseWriter, r *http.Request) {
 		pkg.ErrorHandler(w, http.StatusMethodNotAllowed)
 		return
 	}
-	// fmt.Println(r.Context().Value(KeyUserType(keyUser)), 1111)
-	// user, ok := r.Context().Value(KeyUserType(keyUser)).(models.User)
-	// if !ok {
-	// 	pkg.ErrorHandler(w, http.StatusUnauthorized)
-	// 	return
-	// }
+
 	posts, err := app.postService.GetAllPosts()
 	if err != nil {
 		log.Println(err)
