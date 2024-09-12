@@ -13,10 +13,37 @@ type UserQuery interface {
 	GetUserByEmail(email string) (models.User, error)
 	GetUserByUsername(username string) (models.User, error)
 	UpdateUser(user *models.User) error
+	GetUserIdByPostId(postId int) (int64, error)
+	Notification(notification *models.Notification) error
 }
 
 type userQuery struct {
 	db *sql.DB
+}
+
+func (u *userQuery) Notification(notification *models.Notification) error {
+	_, err := u.db.Exec(`insert into notifications (action,content,UserFrom,UserTo,Username,SourceId,CreatedAt) values (?,?,?,?,?,?,?)`, notification.Action, notification.Content, notification.UserFrom, notification.UserTo, notification.Username, notification.SourceID, notification.CreatedAt)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (u *userQuery) CreateUser(user *models.User) error {
+	_, err := u.db.Exec(`insert into users (username, email, password) VALUES (?,?,?)`, user.Username, user.Email, user.Password)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (u *userQuery) GetUserIdByPostId(postId int) (int64, error) {
+	var id int64
+	err := u.db.QueryRow("SELECT user_id FROM posts WHERE post_id = ?", postId).Scan(&id)
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
 }
 
 func (u *userQuery) UpdateUser(user *models.User) error {
@@ -67,12 +94,4 @@ func (u *userQuery) GetUserByUsername(username string) (models.User, error) {
 		return models.User{}, err
 	}
 	return user, nil
-}
-
-func (u *userQuery) CreateUser(user *models.User) error {
-	_, err := u.db.Exec(`insert into users (username, email, password) VALUES (?,?,?)`, user.Username, user.Email, user.Password)
-	if err != nil {
-		return err
-	}
-	return nil
 }

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"forum/app/models"
 	"forum/pkg"
 	"log"
@@ -39,13 +40,13 @@ func (app *App) ReactionHandler(w http.ResponseWriter, r *http.Request) {
 		ID = id
 		path = "/" + parts[1] + "/" + parts[2] + "/" + parts[3]
 
-		commentiD, err := strconv.Atoi(parts[5])
+		commentID, err := strconv.Atoi(parts[5])
 		if err != nil {
 			log.Println(err)
 			pkg.ErrorHandler(w, http.StatusInternalServerError)
 			return
 		}
-		commentID = commentiD
+		commentID = commentID
 	}
 	user, ok := r.Context().Value(KeyUserType(keyUser)).(models.User)
 	if !ok {
@@ -53,11 +54,24 @@ func (app *App) ReactionHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// fmt.Println("Switch", path)
-
 	switch path {
 	case "/post/like":
 		status := app.postService.LikePost(ID, int(user.ID))
+		userFrom := user.ID
+		userFromUsername := user.Username
+		userTo, err := app.userService.GetUserByPostId(ID)
+		if err != nil {
+			log.Println(err)
+			pkg.ErrorHandler(w, http.StatusInternalServerError)
+		}
+		sourceId := ID
+		action := "liked your post"
+		err = app.userService.SendNotification(userTo, userFrom, userFromUsername, sourceId, action)
+		if err != nil {
+			log.Println(err)
+			pkg.ErrorHandler(w, http.StatusInternalServerError)
+		}
+
 		switch status {
 		case http.StatusInternalServerError:
 			pkg.ErrorHandler(w, http.StatusInternalServerError)
@@ -93,6 +107,16 @@ func (app *App) ReactionHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	case "/post/dislike":
 		status := app.postService.DislikePost(ID, int(user.ID))
+		userFrom := user.ID
+		userFromUsername := user.Username
+		userTo, err := app.userService.GetUserByPostId(ID)
+		if err != nil {
+			log.Println(err)
+			pkg.ErrorHandler(w, http.StatusInternalServerError)
+		}
+		sourceId := ID
+		action := "disliked your post"
+		err = app.userService.SendNotification(userTo, userFrom, userFromUsername, sourceId, action)
 		switch status {
 		case http.StatusInternalServerError:
 			pkg.ErrorHandler(w, http.StatusInternalServerError)
@@ -127,6 +151,18 @@ func (app *App) ReactionHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	case "/post/comment/like":
 		status := app.postService.LikeComment(commentID, int(user.ID))
+		userFrom := user.ID
+		userFromUsername := user.Username
+		userTo, err := app.userService.GetUserByPostId(ID)
+		if err != nil {
+			log.Println(err)
+
+			fmt.Println("comment like")
+			pkg.ErrorHandler(w, http.StatusInternalServerError)
+		}
+		sourceId := commentID
+		action := "liked your comment"
+		err = app.userService.SendNotification(userTo, userFrom, userFromUsername, sourceId, action)
 		switch status {
 		case http.StatusInternalServerError:
 			pkg.ErrorHandler(w, http.StatusInternalServerError)
@@ -139,6 +175,16 @@ func (app *App) ReactionHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	case "/post/comment/dislike":
 		status := app.postService.DislikeComment(commentID, int(user.ID))
+		userFrom := user.ID
+		userFromUsername := user.Username
+		userTo, err := app.userService.GetUserByPostId(ID)
+		if err != nil {
+			log.Println(err)
+			pkg.ErrorHandler(w, http.StatusInternalServerError)
+		}
+		sourceId := commentID
+		action := "disliked your comment"
+		err = app.userService.SendNotification(userTo, userFrom, userFromUsername, sourceId, action)
 		switch status {
 		case http.StatusInternalServerError:
 			pkg.ErrorHandler(w, http.StatusInternalServerError)

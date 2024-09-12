@@ -1,9 +1,18 @@
 package repository
 
+import (
+	"database/sql"
+)
+
 func (p postQuery) GetCommentLikeStatus(commentId, userId int) int {
 	query := `select status from comment_likes where comment_id=? and user_id=?`
+
 	var likeStatus int
-	p.db.QueryRow(query, commentId, userId).Scan(&likeStatus)
+	err := p.db.QueryRow(query, commentId, userId).Scan(&likeStatus)
+
+	if err == sql.ErrNoRows {
+		likeStatus = 0
+	}
 	return likeStatus
 }
 
@@ -40,6 +49,9 @@ func (p postQuery) DeleteCommentDislike(commentId, userId int) error {
 func (p postQuery) GetCommentDislikeStatus(commentId, userId int) int {
 	query := `select status from comment_dislikes where comment_id=? and user_id=?`
 	var dislikeStatus int
-	p.db.QueryRow(query, commentId, userId).Scan(&dislikeStatus)
+	err := p.db.QueryRow(query, commentId, userId).Scan(&dislikeStatus)
+	if err == sql.ErrNoRows {
+		dislikeStatus = 0
+	}
 	return dislikeStatus
 }
