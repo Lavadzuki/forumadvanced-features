@@ -18,12 +18,14 @@ func (p postQuery) GetCommentLikeStatus(commentId, userId int) int {
 
 func (p postQuery) LikeComment(commentId, userID, status int) error {
 	query := `insert into comment_likes (user_id, comment_id, status) VALUES (?,?,?)`
+
 	_, err := p.db.Exec(query, userID, commentId, status)
 	return err
 }
 
 func (p postQuery) UpdateCommentLikeDislike(commentId, like, dislike int) error {
 	query := `update comments set like=?,dislike=? where comment_id=?`
+
 	_, err := p.db.Exec(query, like, dislike, commentId)
 	return err
 }

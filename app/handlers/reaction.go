@@ -40,13 +40,13 @@ func (app *App) ReactionHandler(w http.ResponseWriter, r *http.Request) {
 		ID = id
 		path = "/" + parts[1] + "/" + parts[2] + "/" + parts[3]
 
-		commentID, err := strconv.Atoi(parts[5])
+		commentId, err := strconv.Atoi(parts[5])
 		if err != nil {
 			log.Println(err)
 			pkg.ErrorHandler(w, http.StatusInternalServerError)
 			return
 		}
-		commentID = commentID
+		commentID = commentId
 	}
 	user, ok := r.Context().Value(KeyUserType(keyUser)).(models.User)
 	if !ok {

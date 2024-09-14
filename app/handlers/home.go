@@ -29,6 +29,7 @@ func (app *App) HomeHandler(w http.ResponseWriter, r *http.Request) {
 		// User:  user,
 		Genre: "/",
 	}
+
 	pkg.RenderTemplate(w, "index.html", data)
 }
 
