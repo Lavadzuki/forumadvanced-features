@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"forum/app/models"
+	"log"
 	"strings"
 )
 
@@ -15,6 +16,8 @@ type UserQuery interface {
 	UpdateUser(user *models.User) error
 	GetUserIdByPostId(postId int) (int64, error)
 	Notification(notification *models.Notification) error
+	NotificationExists(userTo, userFrom int64, sourceId int, action string) (bool, error)
+	DeleteNotification(userTo, userFrom int64, sourceId int, action string) error
 }
 
 type userQuery struct {
@@ -26,6 +29,32 @@ func (u *userQuery) Notification(notification *models.Notification) error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func (u *userQuery) NotificationExists(userTo, userFrom int64, sourceId int, action string) (bool, error) {
+	var exists bool
+	err := u.db.QueryRow(`SELECT EXISTS(SELECT 1 FROM notifications WHERE UserTo = ? AND UserFrom = ? AND SourceID = ? AND Action = ?)`, userTo, userFrom, sourceId, action).Scan(&exists)
+	if err != nil {
+		log.Println("Error checking if notification exists:", err)
+		return false, err
+	}
+
+	log.Printf("Notification exists: %v for action: %s\n", exists, action)
+	return exists, nil
+}
+
+func (u *userQuery) DeleteNotification(userTo, userFrom int64, sourceId int, action string) error {
+	log.Printf("Attempting to delete notification with action: %s, UserTo: %d, UserFrom: %d, SourceID: %d\n", action, userTo, userFrom, sourceId)
+
+	res, err := u.db.Exec(`DELETE FROM notifications WHERE UserTo = ? AND UserFrom = ? AND SourceID = ? AND Action = ?`, userTo, userFrom, sourceId, action)
+	if err != nil {
+		log.Println("Error deleting notification:", err)
+		return err
+	}
+	// to check is it deleted or not
+	rowsAffected, _ := res.RowsAffected()
+	log.Printf("Deleted %d rows for action %s\n", rowsAffected, action)
 	return nil
 }
 
@@ -54,6 +83,7 @@ func (u *userQuery) UpdateUser(user *models.User) error {
 	}
 	return nil
 }
+
 func (u *userQuery) GetUserIdByToken(token string) (int, error) {
 	row := u.db.QueryRow(`select user_id from sessions where token=?`, token)
 	var userId int

@@ -21,7 +21,7 @@ func AddAuthPath(paths ...string) {
 }
 
 func (app *App) ratelimiter(next http.Handler) http.HandlerFunc {
-	rl := NewRateLimiter(10, time.Minute)
+	rl := NewRateLimiter(30, time.Minute)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ip := r.RemoteAddr
 		if !rl.Allow(ip) {
