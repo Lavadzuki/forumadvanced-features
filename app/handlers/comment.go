@@ -58,8 +58,17 @@ func (app *App) CommentHandler(w http.ResponseWriter, r *http.Request) {
 			Message:  message,
 			Born:     time.Now().Format(time.RFC822),
 		}
-
+		userTo, err := app.userService.GetUserByPostId(id)
+		if err != nil {
+			log.Println(err)
+			pkg.ErrorHandler(w, http.StatusInternalServerError)
+		}
+		userFrom := user.ID
+		userFromUsername := user.Username
+		sourceId := id
+		action := "commented your post"
 		status, err := app.postService.CreateComment(&comment)
+		err = app.userService.SendNotification(userTo, userFrom, userFromUsername, sourceId, action)
 		if err != nil {
 			log.Println(err)
 		}

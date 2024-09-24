@@ -57,7 +57,7 @@ func (u *userService) SendNotification(userTo, userFrom int64, userFromUsername 
 	}
 
 	//  If a notification for the same action exists, don't send it again
-	if exists {
+	if exists && action != "commented your post" {
 		log.Println("Notification for this action already exists, not sending again.")
 		return nil
 	}
