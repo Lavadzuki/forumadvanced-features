@@ -9,6 +9,7 @@ type Notification struct {
 	UserFrom  int64
 	UserTo    int64
 	Username  string
+	Source    string
 	SourceID  int
 	CreatedAt time.Time
 }

@@ -1,10 +1,8 @@
 package user
 
 import (
-	"fmt"
 	"forum/app/models"
 	"log"
-	"time"
 )
 
 func (u *userService) GetUserByToken(token string) (models.User, error) {
@@ -27,9 +25,9 @@ func (u *userService) GetUserByPostId(postId int) (int64, error) {
 	return u.repository.GetUserIdByPostId(postId)
 }
 
-func (u *userService) SendNotification(userTo, userFrom int64, userFromUsername string, sourceId int, action string) error {
+func (u *userService) SendNotification(notification *models.Notification) error {
 	// First, we need to identify the opposite action. There can becas where User Liked -> Disliked -> Liked. If we do not delete old Like, the last action will be Disliked since we do not create new insctance of like if it is already exists(Explained later.)
-
+	action := notification.Action
 	var oppositeAction string
 	if action == "liked your post" {
 		oppositeAction = "disliked your post"
@@ -44,13 +42,13 @@ func (u *userService) SendNotification(userTo, userFrom int64, userFromUsername 
 	}
 
 	// If user of the same post making Dislike instead of Like we should delete this dislike)
-	err := u.repository.DeleteNotification(userTo, userFrom, sourceId, oppositeAction)
+	err := u.repository.DeleteNotification(notification.UserTo, notification.UserFrom, notification.SourceID, oppositeAction)
 	if err != nil {
 		log.Println("Error deleting opposite action notification:", err)
 		return err
 	}
 	// if User two or more times in a row click on the Like, we check is it exists.
-	exists, err := u.repository.NotificationExists(userTo, userFrom, sourceId, action)
+	exists, err := u.repository.NotificationExists(notification.UserTo, notification.UserFrom, notification.SourceID, action)
 	if err != nil {
 		log.Println("Error checking if notification exists:", err)
 		return err
@@ -62,17 +60,17 @@ func (u *userService) SendNotification(userTo, userFrom int64, userFromUsername 
 		return nil
 	}
 
-	notification := models.Notification{
-		Action:    action,
-		Content:   fmt.Sprintf("%s %s ", userFromUsername, action),
-		UserFrom:  userFrom,
-		UserTo:    userTo,
-		Username:  userFromUsername,
-		SourceID:  sourceId,
-		CreatedAt: time.Now(),
-	}
+	//notification := models.Notification{
+	//	Action:    action,
+	//	Content:   fmt.Sprintf("%s %s ", userFromUsername, action),
+	//	UserFrom:  userFrom,
+	//	UserTo:    userTo,
+	//	Username:  userFromUsername,
+	//	SourceID:  sourceId,
+	//	CreatedAt: time.Now(),
+	//}
 
-	err = u.repository.Notification(&notification)
+	err = u.repository.Notification(notification)
 	if err != nil {
 		log.Println("Error creating new notification:", err)
 		return err

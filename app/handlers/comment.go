@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"forum/app/models"
 	"forum/pkg"
 	"log"
@@ -63,12 +64,24 @@ func (app *App) CommentHandler(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 			pkg.ErrorHandler(w, http.StatusInternalServerError)
 		}
+
 		userFrom := user.ID
 		userFromUsername := user.Username
 		sourceId := id
 		action := "commented your post"
+		content := fmt.Sprintf("%s %s", user.ID, action)
+		notification := models.Notification{
+			Action:    action,
+			Content:   content,
+			UserFrom:  userFrom,
+			UserTo:    userTo,
+			Username:  userFromUsername,
+			Source:    "Comment",
+			SourceID:  sourceId,
+			CreatedAt: time.Now(),
+		}
 		status, err := app.postService.CreateComment(&comment)
-		err = app.userService.SendNotification(userTo, userFrom, userFromUsername, sourceId, action)
+		err = app.userService.SendNotification(&notification)
 		if err != nil {
 			log.Println(err)
 		}
@@ -88,7 +101,6 @@ func (app *App) CommentHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *App) WelcomeCommentHandler(w http.ResponseWriter, r *http.Request) {
-	// fmt.Println("welcome to welcome")
 	if r.Method != http.MethodPost {
 		pkg.ErrorHandler(w, http.StatusMethodNotAllowed)
 		return

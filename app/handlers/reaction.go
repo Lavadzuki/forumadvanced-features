@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func (app *App) ReactionHandler(w http.ResponseWriter, r *http.Request) {
@@ -57,16 +58,25 @@ func (app *App) ReactionHandler(w http.ResponseWriter, r *http.Request) {
 	switch path {
 	case "/post/like":
 		status := app.postService.LikePost(ID, int(user.ID))
-		userFrom := user.ID
-		userFromUsername := user.Username
+
 		userTo, err := app.userService.GetUserByPostId(ID)
 		if err != nil {
 			log.Println(err)
 			pkg.ErrorHandler(w, http.StatusInternalServerError)
 		}
-		sourceId := ID
-		action := "liked your post"
-		err = app.userService.SendNotification(userTo, userFrom, userFromUsername, sourceId, action)
+
+		notofication := models.Notification{
+
+			Action:    "liked your post",
+			Content:   fmt.Sprintf("%s liked your post", user.ID),
+			UserFrom:  user.ID,
+			UserTo:    userTo,
+			Username:  user.Username,
+			Source:    "post",
+			SourceID:  ID,
+			CreatedAt: time.Time{},
+		}
+		err = app.userService.SendNotification(&notofication)
 		if err != nil {
 			log.Println(err)
 			pkg.ErrorHandler(w, http.StatusInternalServerError)
@@ -107,16 +117,24 @@ func (app *App) ReactionHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	case "/post/dislike":
 		status := app.postService.DislikePost(ID, int(user.ID))
-		userFrom := user.ID
-		userFromUsername := user.Username
 		userTo, err := app.userService.GetUserByPostId(ID)
 		if err != nil {
 			log.Println(err)
 			pkg.ErrorHandler(w, http.StatusInternalServerError)
 		}
-		sourceId := ID
-		action := "disliked your post"
-		err = app.userService.SendNotification(userTo, userFrom, userFromUsername, sourceId, action)
+
+		notification := models.Notification{
+
+			Action:    "disliked your post",
+			Content:   fmt.Sprintf("%s disliked your post", user.ID),
+			UserFrom:  user.ID,
+			UserTo:    userTo,
+			Username:  user.Username,
+			Source:    "post",
+			SourceID:  ID,
+			CreatedAt: time.Time{},
+		}
+		err = app.userService.SendNotification(&notification)
 		switch status {
 		case http.StatusInternalServerError:
 			pkg.ErrorHandler(w, http.StatusInternalServerError)
@@ -151,8 +169,7 @@ func (app *App) ReactionHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	case "/post/comment/like":
 		status := app.postService.LikeComment(commentID, int(user.ID))
-		userFrom := user.ID
-		userFromUsername := user.Username
+
 		userTo, err := app.userService.GetUserByPostId(ID)
 		if err != nil {
 			log.Println(err)
@@ -160,9 +177,19 @@ func (app *App) ReactionHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("comment like")
 			pkg.ErrorHandler(w, http.StatusInternalServerError)
 		}
-		sourceId := commentID
-		action := "liked your comment"
-		err = app.userService.SendNotification(userTo, userFrom, userFromUsername, sourceId, action)
+
+		notification := models.Notification{
+
+			Action:    "liked your comment",
+			Content:   fmt.Sprintf("%s liked your comment", user.ID),
+			UserFrom:  user.ID,
+			UserTo:    userTo,
+			Username:  user.Username,
+			Source:    "post",
+			SourceID:  commentID,
+			CreatedAt: time.Time{},
+		}
+		err = app.userService.SendNotification(&notification)
 		switch status {
 		case http.StatusInternalServerError:
 			pkg.ErrorHandler(w, http.StatusInternalServerError)
@@ -175,16 +202,25 @@ func (app *App) ReactionHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	case "/post/comment/dislike":
 		status := app.postService.DislikeComment(commentID, int(user.ID))
-		userFrom := user.ID
-		userFromUsername := user.Username
+
 		userTo, err := app.userService.GetUserByPostId(ID)
 		if err != nil {
 			log.Println(err)
 			pkg.ErrorHandler(w, http.StatusInternalServerError)
 		}
-		sourceId := commentID
-		action := "disliked your comment"
-		err = app.userService.SendNotification(userTo, userFrom, userFromUsername, sourceId, action)
+		notification := models.Notification{
+
+			Action:    "disliked your comment",
+			Content:   fmt.Sprintf("%s disliked your comment", user.ID),
+			UserFrom:  user.ID,
+			UserTo:    userTo,
+			Username:  user.Username,
+			Source:    "comment",
+			SourceID:  commentID,
+			CreatedAt: time.Time{},
+		}
+
+		err = app.userService.SendNotification(&notification)
 		switch status {
 		case http.StatusInternalServerError:
 			pkg.ErrorHandler(w, http.StatusInternalServerError)

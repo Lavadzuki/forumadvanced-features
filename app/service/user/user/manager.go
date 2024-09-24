@@ -9,7 +9,7 @@ type UserService interface {
 	GetUserByToken(token string) (models.User, error)
 	GetUserByEmail(email string) (models.User, error)
 	GetUserByPostId(postId int) (int64, error)
-	SendNotification(userTo, userFrom int64, username string, sourceId int, action string) error
+	SendNotification(notification *models.Notification) error
 }
 
 type userService struct {
