@@ -1,0 +1,131 @@
+{{ define "content" }}
+
+<div class="main_item">
+    <h2 class="activity-header">Created Posts</h2>
+    {{ range .CreatedPosts }}
+    <section class="post container">
+        <a href="/post/comment/{{.Id}}">
+            <div class="post__header">
+                <img class="post__avatar" src="/static/img/avatar.png" />
+                <div class="post__info">
+                    <h3 class="post__author">{{ .Author.Username }}</h3>
+                    <span class="post__category">/{{ .Category }}/</span>
+                    <span class="post__created-time">{{ .CreatedTime }}</span>
+                </div>
+            </div>
+            <h2 class="post__title">{{ .Title }}</h2>
+            <div class="post__content">
+                {{ .Content }}
+            </div>
+            <div class="post__actions">
+                <form action="/post/like/{{.Id}}" method="post">
+                    <input type="hidden" name="isMainPage" value="true">
+                    <span class="post__likes">
+                        <input class="imagesL" type="image" src="/static/img/love.png" width="50">{{ .Like }}
+                    </span>
+                </form>
+                <form action="/post/dislike/{{.Id}}" method="post">
+                    <input type="hidden" name="isMainPage" value="true">
+                    <span class="post__dislikes">
+                        <input class="imagesD" type="image" src="/static/img/dislike.png" width="50">{{ .Dislike }}
+                    </span>
+                </form>
+            </div>
+        </a>
+    </section>
+    {{ else }}
+    <p>No posts created yet.</p>
+    {{ end }}
+
+    <h2 class="activity-header">Liked Posts</h2>
+    {{ range .LikedPosts }}
+    <section class="post container">
+        <a href="/post/comment/{{.Id}}">
+            <div class="post__header">
+                <img class="post__avatar" src="/static/img/avatar.png" />
+                <div class="post__info">
+                    <h3 class="post__author">{{ .Author.Username }}</h3>
+                    <span class="post__category">/{{ .Category }}/</span>
+                    <span class="post__created-time">{{ .CreatedTime }}</span>
+                </div>
+            </div>
+            <h2 class="post__title">{{ .Title }}</h2>
+            <div class="post__content">
+                {{ .Content }}
+            </div>
+            <div class="post__actions">
+                <form action="/post/like/{{.Id}}" method="post">
+                    <input type="hidden" name="isMainPage" value="true">
+                    <span class="post__likes">
+                        <input class="imagesL" type="image" src="/static/img/love.png" width="50">{{ .Like }}
+                    </span>
+                </form>
+                <form action="/post/dislike/{{.Id}}" method="post">
+                    <input type="hidden" name="isMainPage" value="true">
+                    <span class="post__dislikes">
+                        <input class="imagesD" type="image" src="/static/img/dislike.png" width="50">{{ .Dislike }}
+                    </span>
+                </form>
+            </div>
+        </a>
+    </section>
+    {{ else }}
+    <p>No posts liked yet.</p>
+    {{ end }}
+
+    <h2 class="activity-header">Disliked Posts</h2>
+    {{ range .DislikedPosts }}
+    <section class="post container">
+        <a href="/post/comment/{{.Id}}">
+            <div class="post__header">
+                <img class="post__avatar" src="/static/img/avatar.png" />
+                <div class="post__info">
+                    <h3 class="post__author">{{ .Author.Username }}</h3>
+                    <span class="post__category">/{{ .Category }}/</span>
+                    <span class="post__created-time">{{ .CreatedTime }}</span>
+                </div>
+            </div>
+            <h2 class="post__title">{{ .Title }}</h2>
+            <div class="post__content">
+                {{ .Content }}
+            </div>
+            <div class="post__actions">
+                <form action="/post/like/{{.Id}}" method="post">
+                    <input type="hidden" name="isMainPage" value="true">
+                    <span class="post__likes">
+                        <input class="imagesL" type="image" src="/static/img/love.png" width="50">{{ .Like }}
+                    </span>
+                </form>
+                <form action="/post/dislike/{{.Id}}" method="post">
+                    <input type="hidden" name="isMainPage" value="true">
+                    <span class="post__dislikes">
+                        <input class="imagesD" type="image" src="/static/img/dislike.png" width="50">{{ .Dislike }}
+                    </span>
+                </form>
+            </div>
+        </a>
+    </section>
+    {{ else }}
+    <p>No posts disliked yet.</p>
+    {{ end }}
+
+    <h2 class="activity-header">Comments on Posts</h2>
+    {{ range .CommentsWithPosts }}
+    <section class="post container">
+        <div class="post__header">
+            <img class="post__avatar" src="/static/img/avatar.png" />
+            <div class="post__info">
+                <h3 class="post__author">{{ .Comment.Username }}</h3>
+                <span class="post__created-time">{{ .Comment.Born }}</span>
+            </div>
+        </div>
+        <h3>Commented on: {{ .Post.Title }}</h3>
+        <p>{{ .Comment.Message }}</p>
+        <a href="/post/comment/{{.Post.Id}}" class="view-post-btn">View Post</a>
+    </section>
+    {{ else }}
+    <p>No comments made yet.</p>
+    {{ end }}
+</div>
+
+{{ end }}

@@ -10,3 +10,8 @@ type Comment struct {
 	Dislike  int
 	Born     string
 }
+
+type CommentWithPost struct {
+	Comment Comment
+	Post    Post
+}

@@ -291,3 +291,29 @@ body::-webkit-scrollbar-thumb {
     width: 180px;
 }
 
+/* Centered headers for each section */
+.activity-header {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+/* Styling the "View Post" button */
+.view-post-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--clr-indigo);  /* Blue background */
+    color: white;               /* White text */
+    text-decoration: none;       /* Remove underline */
+    border-radius: 5px;          /* Rounded corners */
+    margin-top: 10px;
+    transition: background-color 0.3s ease;  /* Smooth hover effect */
+}
+
+.view-post-btn:hover {
+    background-color: var(--clr-rose);   /* Darker blue on hover */
+    transition:color 0.3s;
+
+}
+

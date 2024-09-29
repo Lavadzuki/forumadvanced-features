@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"forum/app/models"
 	"log"
+	"strings"
 )
 
 type PostQuery interface {
@@ -32,10 +33,131 @@ type PostQuery interface {
 	DislikeComment(commentId, userId, status int) error
 	DeleteCommentDislike(commentId, userId int) error
 	GetCommentDislikeStatus(commentId, userId int) int
+
+	//  posts created by the user
+	GetPostsByUserID(userID int64) ([]models.Post, error)
+	//  posts liked by the user
+	GetLikedPostsByUserID(userID int64) ([]models.Post, error)
+	//  posts disliked by the user
+	GetDislikedPostsByUserID(userID int64) ([]models.Post, error)
+	//  comments made by the user along with the posts commented
+	GetCommentsByUserID(userID int64) ([]models.CommentWithPost, error)
 }
 
 type postQuery struct {
 	db *sql.DB
+}
+
+func (p postQuery) GetPostsByUserID(userID int64) ([]models.Post, error) {
+	query := `SELECT * FROM posts WHERE user_id = ?`
+	rows, err := p.db.Query(query, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var posts []models.Post
+	for rows.Next() {
+		var post models.Post
+		var categoryStr string
+		err := rows.Scan(&post.Id, &post.Author.ID, &post.Author.Username, &post.Title, &post.Content, &post.Like, &post.Dislike, &categoryStr, &post.CreatedTime)
+		if err != nil {
+			return nil, err
+		}
+		post.Category = strings.Split(categoryStr, ",")
+		posts = append(posts, post)
+	}
+	return posts, nil
+}
+
+func (p postQuery) GetLikedPostsByUserID(userID int64) ([]models.Post, error) {
+	query := `SELECT p.* FROM posts p JOIN likes l ON p.post_id = l.post_id WHERE l.user_id = ? AND l.status = 1`
+	rows, err := p.db.Query(query, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var posts []models.Post
+	for rows.Next() {
+		var post models.Post
+		var categoryStr string
+		err := rows.Scan(&post.Id, &post.Author.ID, &post.Author.Username, &post.Title, &post.Content, &post.Like, &post.Dislike, &categoryStr, &post.CreatedTime)
+		if err != nil {
+			return nil, err
+		}
+		post.Category = strings.Split(categoryStr, ",")
+		posts = append(posts, post)
+	}
+	return posts, nil
+}
+
+func (p postQuery) GetDislikedPostsByUserID(userID int64) ([]models.Post, error) {
+	query := `SELECT p.* FROM posts p JOIN dislikes d ON p.post_id = d.post_id WHERE d.user_id = ? AND d.status = 1`
+	rows, err := p.db.Query(query, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var posts []models.Post
+	for rows.Next() {
+		var post models.Post
+		var categoryStr string
+		err := rows.Scan(&post.Id, &post.Author.ID, &post.Author.Username, &post.Title, &post.Content, &post.Like, &post.Dislike, &categoryStr, &post.CreatedTime)
+		if err != nil {
+			return nil, err
+		}
+		post.Category = strings.Split(categoryStr, ",")
+		posts = append(posts, post)
+	}
+	return posts, nil
+}
+
+func (p postQuery) GetCommentsByUserID(userID int64) ([]models.CommentWithPost, error) {
+	query := `
+        SELECT 
+            c.comment_id, c.post_id, c.user_id, c.username, c.message, c.like, c.dislike, c.born,
+            p.post_id, p.title, p.message, p.user_id, p.username, p.like, p.dislike, p.category, p.born
+        FROM comments c 
+        JOIN posts p ON c.post_id = p.post_id 
+        WHERE c.user_id = ?`
+	rows, err := p.db.Query(query, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var commentsWithPosts []models.CommentWithPost
+	for rows.Next() {
+		var cwp models.CommentWithPost
+		var categoryStr string
+		err := rows.Scan(
+			&cwp.Comment.Id,
+			&cwp.Comment.PostId,
+			&cwp.Comment.UserId,
+			&cwp.Comment.Username,
+			&cwp.Comment.Message,
+			&cwp.Comment.Like,
+			&cwp.Comment.Dislike,
+			&cwp.Comment.Born,
+			&cwp.Post.Id,
+			&cwp.Post.Title,
+			&cwp.Post.Content,
+			&cwp.Post.Author.ID,
+			&cwp.Post.Author.Username,
+			&cwp.Post.Like,
+			&cwp.Post.Dislike,
+			&categoryStr,
+			&cwp.Post.CreatedTime,
+		)
+		if err != nil {
+			return nil, err
+		}
+		cwp.Post.Category = strings.Split(categoryStr, ",")
+		commentsWithPosts = append(commentsWithPosts, cwp)
+	}
+	return commentsWithPosts, nil
 }
 
 func (p postQuery) CreatePost(post models.Post) (int64, error) {

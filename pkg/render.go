@@ -7,8 +7,6 @@ import (
 	"net/http"
 	"path/filepath"
 	"sync"
-
-	"forum/app/models"
 )
 
 var (
@@ -16,7 +14,7 @@ var (
 	once          sync.Once
 )
 
-func RenderTemplate(w http.ResponseWriter, template string, data models.Data) {
+func RenderTemplate(w http.ResponseWriter, templateName string, data interface{}) {
 	once.Do(func() {
 		err := createTemplate()
 		if err != nil {
@@ -24,37 +22,36 @@ func RenderTemplate(w http.ResponseWriter, template string, data models.Data) {
 			ErrorHandler(w, http.StatusInternalServerError)
 			return
 		}
-
 	})
 
-	t, ok := templateCache[template]
+	t, ok := templateCache[templateName]
 	if !ok {
-
 		ErrorHandler(w, http.StatusInternalServerError)
 		return
 	}
+
 	buf := new(bytes.Buffer)
-	err := t.Execute(w, data)
+
+	err := t.Execute(buf, data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
+
 	_, err = buf.WriteTo(w)
 	if err != nil {
 		log.Println(err)
 		ErrorHandler(w, http.StatusInternalServerError)
 		return
 	}
-
 }
 
 func createTemplate() error {
-	// Load all individual page templates
 	pages, err := filepath.Glob("./templates/html/*.html")
 	if err != nil {
 		return err
 	}
 
-	// Define the pages that do NOT need the base layout
 	standalonePages := map[string]bool{
 		"signin.html":        true,
 		"signup.html":        true,
@@ -70,12 +67,9 @@ func createTemplate() error {
 		var ts *template.Template
 		var err error
 
-		// Check if the page is a standalone page
 		if standalonePages[name] {
-			// Parse without the base layout
 			ts, err = template.ParseFiles(page)
 		} else {
-			// Parse with the base layout
 			ts, err = template.ParseFiles("templates/html/base.html", page)
 		}
 
@@ -83,7 +77,6 @@ func createTemplate() error {
 			return err
 		}
 
-		// Cache the parsed template
 		templateCache[name] = ts
 	}
 

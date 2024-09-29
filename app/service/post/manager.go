@@ -19,6 +19,11 @@ type PostService interface {
 	// filter.go
 	GetFilterPosts(genre string, user models.User) (models.Data, int)
 	GetWelcomeFilterPosts(genre string) (models.Data, int)
+
+	GetPostsByUserID(userID int64) ([]models.Post, error)
+	GetLikedPostsByUserID(userID int64) ([]models.Post, error)
+	GetDislikedPostsByUserID(userID int64) ([]models.Post, error)
+	GetCommentsByUserID(userID int64) ([]models.CommentWithPost, error)
 }
 
 type postService struct {
@@ -27,4 +32,20 @@ type postService struct {
 
 func NewPostService(repo repository.Repo) PostService {
 	return &postService{repository: repo.NewPostQuery()}
+}
+
+func (s *postService) GetPostsByUserID(userID int64) ([]models.Post, error) {
+	return s.repository.GetPostsByUserID(userID)
+}
+
+func (s *postService) GetLikedPostsByUserID(userID int64) ([]models.Post, error) {
+	return s.repository.GetLikedPostsByUserID(userID)
+}
+
+func (s *postService) GetDislikedPostsByUserID(userID int64) ([]models.Post, error) {
+	return s.repository.GetDislikedPostsByUserID(userID)
+}
+
+func (s *postService) GetCommentsByUserID(userID int64) ([]models.CommentWithPost, error) {
+	return s.repository.GetCommentsByUserID(userID)
 }
