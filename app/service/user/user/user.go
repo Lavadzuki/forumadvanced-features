@@ -1,6 +1,7 @@
 package user
 
 import (
+	"fmt"
 	"forum/app/models"
 	"log"
 )
@@ -77,4 +78,22 @@ func (u *userService) SendNotification(notification *models.Notification) error 
 	}
 
 	return nil
+}
+func (u *userService) GetLikedCommentsByUserId(userId int64) ([]models.Comment, error) {
+
+	comments, err := u.repository.GetLikedCommentsByUserId(userId)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println("88 user/user.go", comments)
+	return comments, nil
+}
+
+func (u *userService) GetDislikedCommentsByUserId(userId int64) ([]models.Comment, error) {
+	comments, err := u.repository.GetDislikedCommentsByUserId(userId)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println("97 user/user.go", comments)
+	return comments, nil
 }

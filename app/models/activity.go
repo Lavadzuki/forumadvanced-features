@@ -5,5 +5,7 @@ type ActivityData struct {
 	CreatedPosts      []Post
 	LikedPosts        []Post
 	DislikedPosts     []Post
+	LikedComments     []Comment
+	DislikedComments  []Comment
 	CommentsWithPosts []CommentWithPost
 }

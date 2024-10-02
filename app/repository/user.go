@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
 	"forum/app/models"
 	"log"
 	"strings"
@@ -18,10 +19,86 @@ type UserQuery interface {
 	Notification(notification *models.Notification) error
 	NotificationExists(userTo, userFrom int64, sourceId int, action string) (bool, error)
 	DeleteNotification(userTo, userFrom int64, sourceId int, action string) error
+	GetLikedCommentsByUserId(userId int64) ([]models.Comment, error)
+	GetDislikedCommentsByUserId(userId int64) ([]models.Comment, error)
+	GetCommentByCommentId(commentId int) (models.Comment, error)
 }
 
 type userQuery struct {
 	db *sql.DB
+}
+
+func (u *userQuery) GetCommentByCommentId(commentId int) (models.Comment, error) {
+	var comment models.Comment
+	err := u.db.QueryRow(`select * from comments where comment_id=?`, commentId).Scan(&comment.Id, &comment.PostId, &comment.UserId, &comment.Username, &comment.Message, &comment.Like, &comment.Dislike, &comment.Born)
+	if err != nil {
+		return models.Comment{}, err
+	}
+	return comment, nil
+}
+func (u *userQuery) GetDislikedCommentsByUserId(userId int64) ([]models.Comment, error) {
+	query := `select SourceId from notifications where UserFrom = ? and action='disliked your comment'`
+	rows, err := u.db.Query(query, userId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var comments []models.Comment
+	var commentsNumbers []int
+	for rows.Next() {
+		var commentNumber int
+		if err := rows.Scan(&commentNumber); err != nil {
+			fmt.Println("72")
+			return nil, err
+		}
+		commentsNumbers = append(commentsNumbers, commentNumber)
+	}
+
+	if err := rows.Err(); err != nil {
+		log.Fatal(err)
+	}
+	for _, commentNumber := range commentsNumbers {
+		comment, err := u.GetCommentByCommentId(commentNumber)
+		if err != nil {
+			fmt.Println("85")
+			return nil, err
+		}
+		comments = append(comments, comment)
+	}
+	return comments, nil
+}
+
+func (u *userQuery) GetLikedCommentsByUserId(userId int64) ([]models.Comment, error) {
+	query := `select SourceId from notifications where UserFrom = ? and action='liked your comment'`
+	rows, err := u.db.Query(query, userId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var comments []models.Comment
+	var commentsNumbers []int
+	for rows.Next() {
+		var commentNumber int
+		if err := rows.Scan(&commentNumber); err != nil {
+			fmt.Println("72")
+			return nil, err
+		}
+		commentsNumbers = append(commentsNumbers, commentNumber)
+	}
+	fmt.Println(commentsNumbers, "comments Number")
+	if err := rows.Err(); err != nil {
+		fmt.Println("79")
+		log.Fatal(err)
+	}
+	for _, commentNumber := range commentsNumbers {
+		comment, err := u.GetCommentByCommentId(commentNumber)
+		if err != nil {
+			fmt.Println("85")
+			return nil, err
+		}
+		comments = append(comments, comment)
+	}
+	return comments, nil
 }
 
 func (u *userQuery) Notification(notification *models.Notification) error {

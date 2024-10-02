@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"forum/app/models"
 	"forum/pkg"
 	"log"
@@ -29,6 +30,7 @@ func (app *App) ActivityHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/sign-in", http.StatusSeeOther)
 		return
 	}
+	fmt.Println(user, "user")
 
 	userID := user.ID
 
@@ -59,15 +61,30 @@ func (app *App) ActivityHandler(w http.ResponseWriter, r *http.Request) {
 		pkg.ErrorHandler(w, http.StatusInternalServerError)
 		return
 	}
+	likedComments, err := app.userService.GetLikedCommentsByUserId(userID)
+	if err != nil {
+		log.Println(err)
+		pkg.ErrorHandler(w, http.StatusInternalServerError)
+		return
+	}
+
+	dislikedComments, err := app.userService.GetDislikedCommentsByUserId(userID)
+	fmt.Println(dislikedComments, "disliked comments")
+	if err != nil {
+		log.Println(err)
+		pkg.ErrorHandler(w, http.StatusInternalServerError)
+		return
+	}
 
 	activityData := models.ActivityData{
 		User:              user,
 		CreatedPosts:      createdPosts,
 		LikedPosts:        likedPosts,
 		DislikedPosts:     dislikedPosts,
+		LikedComments:     likedComments,
+		DislikedComments:  dislikedComments,
 		CommentsWithPosts: commentsWithPosts,
 	}
 
-	// fmt.Println(activityData)
 	pkg.RenderTemplate(w, "activity.html", activityData)
 }

@@ -10,6 +10,8 @@ type UserService interface {
 	GetUserByEmail(email string) (models.User, error)
 	GetUserByPostId(postId int) (int64, error)
 	SendNotification(notification *models.Notification) error
+	GetLikedCommentsByUserId(userId int64) ([]models.Comment, error)
+	GetDislikedCommentsByUserId(userId int64) ([]models.Comment, error)
 }
 
 type userService struct {

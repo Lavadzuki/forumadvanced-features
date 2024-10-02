@@ -174,7 +174,6 @@ func (app *App) ReactionHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println(err)
 
-			fmt.Println("comment like")
 			pkg.ErrorHandler(w, http.StatusInternalServerError)
 		}
 

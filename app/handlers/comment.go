@@ -69,7 +69,7 @@ func (app *App) CommentHandler(w http.ResponseWriter, r *http.Request) {
 		userFromUsername := user.Username
 		sourceId := id
 		action := "commented your post"
-		content := fmt.Sprintf("%v %s", user.ID, action)
+		content := fmt.Sprintf("%s %s", userFromUsername, action)
 		notification := models.Notification{
 			Action:    action,
 			Content:   content,

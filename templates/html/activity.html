@@ -109,6 +109,67 @@
     <p>No posts disliked yet.</p>
     {{ end }}
 
+    <h2 class="activity-header">Liked Comments</h2>
+    {{ range .LikedComments }}
+    <section class="comment container">
+        <a href="/post/comment/{{.Id}}">
+            <div class="post__header">
+                <img class="post__avatar" src="/static/img/avatar.png" />
+            </div>
+            <h2 class="post__title">{{ .Message }}</h2>
+            <div class="post__content">
+                {{ .Message }}
+            </div>
+            <div class="post__actions">
+                <form action="/post/like/{{.Id}}" method="post">
+                    <input type="hidden" name="isMainPage" value="true">
+                    <span class="post__likes">
+                        <input class="imagesL" type="image" src="/static/img/love.png" width="50">{{ .Like }}
+                    </span>
+                </form>
+                <form action="/post/dislike/{{.Id}}" method="post">
+                    <input type="hidden" name="isMainPage" value="true">
+                    <span class="post__dislikes">
+                        <input class="imagesD" type="image" src="/static/img/dislike.png" width="50">{{ .Dislike }}
+                    </span>
+                </form>
+            </div>
+        </a>
+    </section>
+    {{ else }}
+    <p>No comments disliked yet.</p>
+    {{ end }}
+    <h2 class="activity-header">Disliked Posts</h2>
+    {{ range .DislikedComments }}
+    <section class="post container">
+        <a href="/post/comment/{{.Id}}">
+            <div class="post__header">
+                <img class="post__avatar" src="/static/img/avatar.png" />
+            </div>
+            <h2 class="post__title">{{ .Message }}</h2>
+            <div class="post__content">
+                {{ .Message }}
+            </div>
+            <div class="post__actions">
+                <form action="/post/like/{{.Id}}" method="post">
+                    <input type="hidden" name="isMainPage" value="true">
+                    <span class="post__likes">
+                        <input class="imagesL" type="image" src="/static/img/love.png" width="50">{{ .Like }}
+                    </span>
+                </form>
+                <form action="/post/dislike/{{.Id}}" method="post">
+                    <input type="hidden" name="isMainPage" value="true">
+                    <span class="post__dislikes">
+                        <input class="imagesD" type="image" src="/static/img/dislike.png" width="50">{{ .Dislike }}
+                    </span>
+                </form>
+            </div>
+        </a>
+    </section>
+    {{ else }}
+    <p>No posts disliked yet.</p>
+    {{ end }}
+
     <h2 class="activity-header">Comments on Posts</h2>
     {{ range .CommentsWithPosts }}
     <section class="post container">
