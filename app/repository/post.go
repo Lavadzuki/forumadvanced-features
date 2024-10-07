@@ -2,9 +2,11 @@ package repository
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"forum/app/models"
 	"log"
+	"net/http"
 	"strings"
 )
 
@@ -42,10 +44,47 @@ type PostQuery interface {
 	GetDislikedPostsByUserID(userID int64) ([]models.Post, error)
 	//  comments made by the user along with the posts commented
 	GetCommentsByUserID(userID int64) ([]models.CommentWithPost, error)
+	DeletePost(postId int) error
+	UpdatePost(post models.Post) (int, error)
 }
 
 type postQuery struct {
 	db *sql.DB
+}
+
+func (p postQuery) DeletePost(postId int) error {
+	query := `Delete from posts where post_id=?`
+	_, err := p.db.Exec(query, postId)
+	if err != nil {
+		return err
+	}
+	fmt.Println("post deleted")
+	return nil
+}
+func (p postQuery) UpdatePost(post models.Post) (int, error) {
+	var existingPost models.Post
+	err := p.db.QueryRow("SELECT title,message, category,born FROM posts WHERE post_id = ?", post.Id).Scan(
+		&existingPost.Title, &existingPost.Content, &existingPost.Category, &existingPost.CreatedTime,
+	)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return http.StatusNotFound, errors.New("post not found")
+		}
+		return http.StatusInternalServerError, err
+	}
+
+	// Обновление поста в базе данных
+	query := `
+        UPDATE posts 
+        SET title = ?, message = ?, category = ?, born = ? 
+        WHERE post_id = ?
+    `
+	_, err = p.db.Exec(query, post.Title, post.Content, post.Category, post.CreatedTime, post.Id)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+	return http.StatusOK, nil
+
 }
 
 func (p postQuery) GetPostsByUserID(userID int64) ([]models.Post, error) {

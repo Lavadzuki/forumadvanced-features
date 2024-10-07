@@ -1,8 +1,11 @@
 package post
 
 import (
+	"database/sql"
+	"errors"
 	"forum/app/models"
 	"forum/app/repository"
+	"net/http"
 )
 
 type PostService interface {
@@ -24,10 +27,46 @@ type PostService interface {
 	GetLikedPostsByUserID(userID int64) ([]models.Post, error)
 	GetDislikedPostsByUserID(userID int64) ([]models.Post, error)
 	GetCommentsByUserID(userID int64) ([]models.CommentWithPost, error)
+
+	DeletePost(postId int) error
+	GetPostByPostId(postId int) (models.Post, error)
+	GetAllCategory() ([]models.Category, error)
+	UpdatePost(post models.Post) (int, error)
 }
 
 type postService struct {
 	repository repository.PostQuery
+}
+
+func (p postService) UpdatePost(post models.Post) (int, error) {
+	status, err := p.repository.UpdatePost(post)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return http.StatusNotFound, errors.New("post not found")
+		}
+		return http.StatusInternalServerError, err
+	}
+	return status, nil
+}
+
+func (p postService) GetAllCategory() ([]models.Category, error) {
+	return p.repository.GetCategory()
+}
+
+func (p postService) GetPostByPostId(postId int) (models.Post, error) {
+	id := int64(postId)
+	post, err := p.repository.GetPostById(id)
+	if err != nil {
+		return models.Post{}, err
+	}
+	return post, nil
+}
+
+func (p postService) DeletePost(postId int) error {
+	err := p.repository.DeletePost(postId)
+	return err
+
 }
 
 func NewPostService(repo repository.Repo) PostService {

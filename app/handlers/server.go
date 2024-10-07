@@ -29,13 +29,15 @@ func (app *App) Run(cfg config.Http) *http.Server {
 		"/github/auth/",
 		"/github/auth/callback/",
 		"/post/delete/",
+		"/post/edit/",
 	}
 	AddAuthPath(authPaths...)
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", app.authorizedMiddleware(app.HomeHandler))      // home
-	mux.HandleFunc("/post/", app.authorizedMiddleware(app.PostHandler)) // post
-	// mux.HandleFunc("/post/delete/", app.authorizedMiddleware(app.DeletePostHandler)) //post
+	mux.HandleFunc("/", app.authorizedMiddleware(app.HomeHandler))                   // home
+	mux.HandleFunc("/post/", app.authorizedMiddleware(app.PostHandler))              // post
+	mux.HandleFunc("/post/delete/", app.authorizedMiddleware(app.DeletePostHandler)) //post
+	mux.HandleFunc("/post/edit/", app.authorizedMiddleware(app.EditPostHandler))
 	mux.HandleFunc("/post/like/", app.authorizedMiddleware(app.ReactionHandler))    // reaction
 	mux.HandleFunc("/post/dislike/", app.authorizedMiddleware(app.ReactionHandler)) // reaction
 

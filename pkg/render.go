@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"bytes"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -23,6 +24,7 @@ func RenderTemplate(w http.ResponseWriter, templateName string, data interface{}
 			return
 		}
 	})
+	fmt.Println(7)
 
 	t, ok := templateCache[templateName]
 	if !ok {
@@ -59,6 +61,7 @@ func createTemplate() error {
 		"commentunauth.html": true,
 		"commentview.html":   true,
 		"error.html":         true,
+		"edit_post.html":     true,
 	}
 
 	for _, page := range pages {
