@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"forum/app/models"
 	"forum/pkg"
 	"log"
@@ -57,7 +56,6 @@ func (app *App) WelcomeHandler(w http.ResponseWriter, r *http.Request) {
 func (app *App) DeletePostHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodGet {
-		fmt.Println("57 home.go")
 		pkg.ErrorHandler(w, http.StatusMethodNotAllowed)
 		return
 	}
@@ -74,8 +72,7 @@ func (app *App) DeletePostHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *App) EditPostHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(1)
-	fmt.Println(r.Method)
+
 	if r.Method == http.MethodGet {
 		// Получаем ID поста из URL
 		parts := strings.Split(r.URL.Path, "/")
@@ -91,7 +88,6 @@ func (app *App) EditPostHandler(w http.ResponseWriter, r *http.Request) {
 			pkg.ErrorHandler(w, http.StatusNotFound)
 			return
 		}
-		fmt.Println(post)
 
 		// Формируем данные для шаблона
 		tmplData := models.TmplData{
@@ -99,11 +95,10 @@ func (app *App) EditPostHandler(w http.ResponseWriter, r *http.Request) {
 			Categories: []string{"Fantasy", "Drama", "Comedy", "Adventure", "Romance"},
 			User:       models.User{}, // Вы можете передать реального пользователя
 		}
-		fmt.Println(5)
 
 		// Рендерим HTML-шаблон для редактирования поста
 		pkg.RenderTemplate(w, "edit_post.html", tmplData)
-		fmt.Println(6)
+
 		return
 
 	}
@@ -115,7 +110,6 @@ func (app *App) EditPostHandler(w http.ResponseWriter, r *http.Request) {
 			pkg.ErrorHandler(w, http.StatusBadRequest)
 			return
 		}
-		fmt.Println(4)
 
 		title := r.FormValue("title")
 		message := r.FormValue("message")

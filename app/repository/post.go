@@ -3,7 +3,6 @@ package repository
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"forum/app/models"
 	"log"
 	"net/http"
@@ -58,7 +57,6 @@ func (p postQuery) DeletePost(postId int) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("post deleted")
 	return nil
 }
 func (p postQuery) UpdatePost(post models.Post) (int, error) {
@@ -200,7 +198,6 @@ func (p postQuery) GetCommentsByUserID(userID int64) ([]models.CommentWithPost, 
 }
 
 func (p postQuery) CreatePost(post models.Post) (int64, error) {
-	fmt.Println(post.Author.Username, "author")
 	res, err := p.db.Exec(`insert into posts (user_id, username, title, message, like, dislike, category, born) VALUES (?,?,?,?,?,?,?,?)`, post.Author.ID, post.Author.Username, post.Title, post.Content, 0, 0, post.Category, post.CreatedTime)
 	if err != nil {
 		log.Println(err)
