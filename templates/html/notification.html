@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/utils.css">
+</head>
+<body>
+<div class="container">
+    <h1 class="page-title">Notifications</h1>
+    {{if .}}
+    <ul class="notification-list">
+        {{range .}}
+        <li class="notification-item">
+            <div class="notification-content">
+                <p><strong>{{.Username}}</strong> {{.Action}}: {{.Content}}</p>
+                <p><small>{{.CreatedAt.Format "02 Jan 2006, 15:04"}}</small></p>
+            </div>
+            <form action="/notification/delete/{{.ID}}" method="post" class="notification-delete-form">
+                <button type="submit" class="btn btn-danger">OK</button>
+            </form>
+        </li>
+        {{end}}
+    </ul>
+    {{else}}
+    <p>No notifications available</p>
+    {{end}}
+</div>
+</body>
+</html>

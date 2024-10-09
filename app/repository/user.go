@@ -23,6 +23,7 @@ type UserQuery interface {
 	GetDislikedCommentsByUserId(userId int64) ([]models.Comment, error)
 	GetCommentByCommentId(commentId int) (models.Comment, error)
 	GetAllNotifications(userId int64) ([]models.Notification, error)
+	DeleteNotificationById(id int) error
 }
 
 type userQuery struct {
@@ -152,6 +153,17 @@ func (u *userQuery) DeleteNotification(userTo, userFrom int64, sourceId int, act
 	rowsAffected, _ := res.RowsAffected()
 	log.Printf("Deleted %d rows for action %s\n", rowsAffected, action)
 	return nil
+}
+func (u *userQuery) DeleteNotificationById(id int) error {
+	res, err := u.db.Exec(`DELETE FROM notifications WHERE id=?`, id)
+	if err != nil {
+		log.Println("Error deleting notification:", err)
+		return err
+	}
+	rowsAffected, _ := res.RowsAffected()
+	log.Printf("Deleted %d rows for action %s\n", rowsAffected)
+	return nil
+
 }
 
 func (u *userQuery) CreateUser(user *models.User) error {

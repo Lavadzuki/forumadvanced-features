@@ -13,12 +13,17 @@ type UserService interface {
 	GetLikedCommentsByUserId(userId int64) ([]models.Comment, error)
 	GetDislikedCommentsByUserId(userId int64) ([]models.Comment, error)
 	GetAllNotificationsByUserId(userId int64) ([]models.Notification, error)
+	DeleteNotification(id int) error
 }
 
 type userService struct {
 	repository repository.UserQuery
 }
 
+func (u *userService) DeleteNotification(id int) error {
+
+	return u.repository.DeleteNotificationById(id)
+}
 func (u *userService) GetAllNotificationsByUserId(userId int64) ([]models.Notification, error) {
 	return u.repository.GetAllNotifications(userId)
 }

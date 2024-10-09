@@ -57,14 +57,7 @@
                     <i class="fas fa-list header__link"></i>
                     <span class="nav-item header__link">Romance</span>
                 </a></li>
-
                 <!-- Notification Icon with Dropdown -->
-                <li class="notification">
-                    <a href="#" id="notificationIcon">
-                        <i class="fas fa-bell header__link"></i>
-                        <span class="nav-item header__link">Notifications</span>
-                        <span class="notification-badge">3</span> <!-- Dynamic number -->
-                    </a>
 
                     <!-- Notification Dropdown -->
                     <!-- <div id="notificationDropdown" class="notification-dropdown">
@@ -96,26 +89,26 @@
     </main>
 
     <!-- JavaScript for Toggle -->
-    <script>
-        document.getElementById("notificationIcon").addEventListener("click", function(event){
-            event.preventDefault();
-            var dropdown = document.getElementById("notificationDropdown");
-            dropdown.classList.toggle("show");
-        });
+<!--    <script>-->
+<!--        document.getElementById("notificationIcon").addEventListener("click", function(event){-->
+<!--            event.preventDefault();-->
+<!--            var dropdown = document.getElementById("notificationDropdown");-->
+<!--            dropdown.classList.toggle("show");-->
+<!--        });-->
 
-        // Close the dropdown if clicked outside of it
-        window.onclick = function(event) {
-            if (!event.target.matches('#notificationIcon')) {
-                var dropdowns = document.getElementsByClassName("notification-dropdown");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
-                }
-            }
-        }
-    </script>
+<!--        // Close the dropdown if clicked outside of it-->
+<!--        window.onclick = function(event) {-->
+<!--            if (!event.target.matches('#notificationIcon')) {-->
+<!--                var dropdowns = document.getElementsByClassName("notification-dropdown");-->
+<!--                for (var i = 0; i < dropdowns.length; i++) {-->
+<!--                    var openDropdown = dropdowns[i];-->
+<!--                    if (openDropdown.classList.contains('show')) {-->
+<!--                        openDropdown.classList.remove('show');-->
+<!--                    }-->
+<!--                }-->
+<!--            }-->
+<!--        }-->
+<!--    </script>-->
 
 </body>
 </html>

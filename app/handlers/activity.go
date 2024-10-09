@@ -92,6 +92,7 @@ func (app *App) ActivityHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *App) Notifications(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(1234)
 	if r.Method != http.MethodGet {
 		pkg.ErrorHandler(w, http.StatusMethodNotAllowed)
 		return
@@ -110,7 +111,7 @@ func (app *App) Notifications(w http.ResponseWriter, r *http.Request) {
 		pkg.ErrorHandler(w, http.StatusInternalServerError)
 		return
 	}
-	pkg.RenderTemplate(w, "notifications.html", notifications)
+	pkg.RenderTemplate(w, "notification.html", notifications)
 
 }
 
@@ -123,15 +124,15 @@ func (app *App) deleteNotification(w http.ResponseWriter, r *http.Request) {
 		pkg.ErrorHandler(w, http.StatusBadRequest)
 		return
 	}
+	parts := strings.Split(r.URL.Path, "/")
 
-	notificationID, ok := getIdFromPath(req, 4)
-	if !ok {
-		log.Print("deleteNotification: invalid url path")
-		pkg.ErrorHandler(w, http.StatusNotFound)
+	notificationID, err := strconv.Atoi(parts[4])
+	if err != nil {
+		pkg.ErrorHandler(w, http.StatusBadRequest)
 		return
 	}
 
-	err := app.userService.DeleteNotification(notificationID)
+	err = app.userService.DeleteNotification(notificationID)
 	if err != nil {
 		pkg.ErrorHandler(w, http.StatusInternalServerError)
 		return
