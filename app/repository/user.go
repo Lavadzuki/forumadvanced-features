@@ -22,10 +22,29 @@ type UserQuery interface {
 	GetLikedCommentsByUserId(userId int64) ([]models.Comment, error)
 	GetDislikedCommentsByUserId(userId int64) ([]models.Comment, error)
 	GetCommentByCommentId(commentId int) (models.Comment, error)
+	GetAllNotifications(userId int64) ([]models.Notification, error)
 }
 
 type userQuery struct {
 	db *sql.DB
+}
+
+func (u *userQuery) GetAllNotifications(userId int64) ([]models.Notification, error) {
+	var notifications []models.Notification
+	rows, err := u.db.Query("SELECT * FROM notifications WHERE UserTo=?", userId)
+	if err != nil {
+		return notifications, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var notification models.Notification
+		if err := rows.Scan(&notification); err != nil {
+			fmt.Println("72")
+			return nil, err
+		}
+		notifications = append(notifications, notification)
+	}
+	return notifications, nil
 }
 
 func (u *userQuery) GetCommentByCommentId(commentId int) (models.Comment, error) {

@@ -6,6 +6,8 @@ import (
 	"forum/pkg"
 	"log"
 	"net/http"
+	"strconv"
+	"strings"
 )
 
 func (app *App) ActivityHandler(w http.ResponseWriter, r *http.Request) {
@@ -87,4 +89,53 @@ func (app *App) ActivityHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	pkg.RenderTemplate(w, "activity.html", activityData)
+}
+
+func (app *App) Notifications(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		pkg.ErrorHandler(w, http.StatusMethodNotAllowed)
+		return
+	}
+	parts := strings.Split(r.URL.Path, "/")
+	postID, err := strconv.Atoi(parts[3])
+
+	userID, err := app.userService.GetUserByPostId(postID)
+	if err != nil {
+		pkg.ErrorHandler(w, http.StatusInternalServerError)
+		return
+	}
+
+	notifications, err := app.userService.GetAllNotificationsByUserId(userID)
+	if err != nil {
+		pkg.ErrorHandler(w, http.StatusInternalServerError)
+		return
+	}
+	pkg.RenderTemplate(w, "notifications.html", notifications)
+
+}
+
+func (app *App) deleteNotification(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		pkg.ErrorHandler(w, http.StatusMethodNotAllowed)
+		return
+	}
+	if err := r.ParseForm(); err != nil {
+		pkg.ErrorHandler(w, http.StatusBadRequest)
+		return
+	}
+
+	notificationID, ok := getIdFromPath(req, 4)
+	if !ok {
+		log.Print("deleteNotification: invalid url path")
+		pkg.ErrorHandler(w, http.StatusNotFound)
+		return
+	}
+
+	err := app.userService.DeleteNotification(notificationID)
+	if err != nil {
+		pkg.ErrorHandler(w, http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/user/notifications", http.StatusSeeOther)
 }

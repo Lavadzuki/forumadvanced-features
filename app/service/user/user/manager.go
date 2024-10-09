@@ -12,10 +12,15 @@ type UserService interface {
 	SendNotification(notification *models.Notification) error
 	GetLikedCommentsByUserId(userId int64) ([]models.Comment, error)
 	GetDislikedCommentsByUserId(userId int64) ([]models.Comment, error)
+	GetAllNotificationsByUserId(userId int64) ([]models.Notification, error)
 }
 
 type userService struct {
 	repository repository.UserQuery
+}
+
+func (u *userService) GetAllNotificationsByUserId(userId int64) ([]models.Notification, error) {
+	return u.repository.GetAllNotifications(userId)
 }
 
 func NewUserService(repo repository.Repo) UserService {
