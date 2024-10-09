@@ -14,101 +14,76 @@
 </head>
 
 <body>
-    <!-- Common Header Section -->
-    <header>
-        <nav>
-            <ul>
-                <li class="header__link"><a href="/filter/created-post">
-                    <i class="fas fa-user header__link"></i>
-                    <span class="nav-item header__link">{{ .User.Username }}</span>
-                </a></li>
-                <li><a href="/filter/liked-post">
-                    <i class="fas fa-heart header__link"></i>
-                    <span class="nav-item header__link">Liked Posts</span>
-                </a></li>
-                <li><a href="/">
-                    <i class="fas fa-tasks header__link"></i>
-                    <span class="nav-item header__link">Posts</span>
-                </a></li>
+<!-- Common Header Section -->
+<header>
+    <nav>
+        <ul>
+            <li class="header__link"><a href="/filter/created-post">
+                <i class="fas fa-user header__link"></i>
+                <span class="nav-item header__link">{{ .User.Username }}</span>
+            </a></li>
+            <li><a href="/filter/liked-post">
+                <i class="fas fa-heart header__link"></i>
+                <span class="nav-item header__link">Liked Posts</span>
+            </a></li>
+            <li><a href="/">
+                <i class="fas fa-tasks header__link"></i>
+                <span class="nav-item header__link">Posts</span>
+            </a></li>
 
-                <!-- Activity Section -->
-                <li><a href="/activity">
-                    <i class="fas fa-chart-line header__link"></i>
-                    <span class="nav-item header__link">Activity</span>
-                </a></li>
+            <!-- Activity Section -->
+            <li><a href="/activity">
+                <i class="fas fa-chart-line header__link"></i>
+                <span class="nav-item header__link">Activity</span>
+            </a></li>
 
-                <li><a href="/filter/fantasy">
-                    <i class="fas fa-question-circle header__link"></i>
-                    <span class="nav-item header__link">Fantasy</span>
-                </a></li>
-                <li><a href="/filter/drama">
-                    <i class="fas fa-tv header__link"></i>
-                    <span class="nav-item header__link">Drama</span>
-                </a></li>
-                <li><a href="/filter/comedy">
-                    <i class="fas fa-book header__link"></i>
-                    <span class="nav-item header__link">Comedy</span>
-                </a></li>
-                <li><a href="/filter/adventure">
-                    <i class="fas fa-music header__link"></i>
-                    <span class="nav-item header__link">Adventure</span>
-                </a></li>
-                <li><a href="/filter/romance">
-                    <i class="fas fa-list header__link"></i>
-                    <span class="nav-item header__link">Romance</span>
-                </a></li>
-                <!-- Notification Icon with Dropdown -->
+            <li><a href="/filter/fantasy">
+                <i class="fas fa-question-circle header__link"></i>
+                <span class="nav-item header__link">Fantasy</span>
+            </a></li>
+            <li><a href="/filter/drama">
+                <i class="fas fa-tv header__link"></i>
+                <span class="nav-item header__link">Drama</span>
+            </a></li>
+            <li><a href="/filter/comedy">
+                <i class="fas fa-book header__link"></i>
+                <span class="nav-item header__link">Comedy</span>
+            </a></li>
+            <li><a href="/filter/adventure">
+                <i class="fas fa-music header__link"></i>
+                <span class="nav-item header__link">Adventure</span>
+            </a></li>
+            <li><a href="/filter/romance">
+                <i class="fas fa-list header__link"></i>
+                <span class="nav-item header__link">Romance</span>
+            </a></li>
 
-                    <!-- Notification Dropdown -->
-                    <!-- <div id="notificationDropdown" class="notification-dropdown">
-                        <p><strong>Notifications</strong></p>
-                        <ul>
-                            <li><a href="#">New comment on your post</a></li>
-                            <li><a href="#">New like on your comment</a></li>
-                            <li><a href="#">Friend request accepted</a></li>
-                        </ul>
-                    </div> -->
-                </li>
+            <!-- Notification Icon -->
+            <li>
+                <div class="notification-link">
+                <a class ="interface-link" href="/user/notification" id="notificationIcon">
+                    <i class="fas fa-bell header__link"></i>
+                    <span class="nav-item header__link">Notification</span>
+                </a>
+            </li>
 
-                <li><a href="/logout/" class="logout">
-                    <i class="fas fa-sign-out-alt header__link"></i>
-                    <span class="nav-item header__link">Logout</span>
-                </a></li>
+            <li><a href="/logout/" class="logout">
+                <i class="fas fa-sign-out-alt header__link"></i>
+                <span class="nav-item header__link">Logout</span>
+            </a></li>
 
-                <div class="create_post btn">
-                    <a href="/post/">
-                        <h1 class="posts">Create Post</h1>
-                    </a>
-                </div>
-            </ul>
-        </nav>
-    </header>
+            <div class="create_post btn">
+                <a href="/post/">
+                    <h1 class="posts">Create Post</h1>
+                </a>
+            </div>
+        </ul>
+    </nav>
+</header>
 
-    <main>
-        {{ block "content" . }} {{end}}
-    </main>
-
-    <!-- JavaScript for Toggle -->
-<!--    <script>-->
-<!--        document.getElementById("notificationIcon").addEventListener("click", function(event){-->
-<!--            event.preventDefault();-->
-<!--            var dropdown = document.getElementById("notificationDropdown");-->
-<!--            dropdown.classList.toggle("show");-->
-<!--        });-->
-
-<!--        // Close the dropdown if clicked outside of it-->
-<!--        window.onclick = function(event) {-->
-<!--            if (!event.target.matches('#notificationIcon')) {-->
-<!--                var dropdowns = document.getElementsByClassName("notification-dropdown");-->
-<!--                for (var i = 0; i < dropdowns.length; i++) {-->
-<!--                    var openDropdown = dropdowns[i];-->
-<!--                    if (openDropdown.classList.contains('show')) {-->
-<!--                        openDropdown.classList.remove('show');-->
-<!--                    }-->
-<!--                }-->
-<!--            }-->
-<!--        }-->
-<!--    </script>-->
+<main>
+    {{ block "content" . }} {{end}}
+</main>
 
 </body>
 </html>
