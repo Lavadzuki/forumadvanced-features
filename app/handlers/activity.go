@@ -97,11 +97,14 @@ func (app *App) Notifications(w http.ResponseWriter, r *http.Request) {
 		pkg.ErrorHandler(w, http.StatusMethodNotAllowed)
 		return
 	}
+	fmt.Println(r.URL)
 	parts := strings.Split(r.URL.Path, "/")
 	postID, err := strconv.Atoi(parts[3])
+	fmt.Println(postID, "postID")
 
 	userID, err := app.userService.GetUserByPostId(postID)
 	if err != nil {
+		log.Println(err)
 		pkg.ErrorHandler(w, http.StatusInternalServerError)
 		return
 	}
