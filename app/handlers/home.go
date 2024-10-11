@@ -72,9 +72,8 @@ func (app *App) DeletePostHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *App) EditPostHandler(w http.ResponseWriter, r *http.Request) {
-
 	if r.Method == http.MethodGet {
-		// Получаем ID поста из URL
+		// Get the post ID from the URL
 		parts := strings.Split(r.URL.Path, "/")
 		postID, err := strconv.Atoi(parts[3])
 		if err != nil {
@@ -82,42 +81,51 @@ func (app *App) EditPostHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Получаем пост по ID
+		// Retrieve the post by ID
 		post, err := app.postService.GetPostByPostId(postID)
 		if err != nil {
 			pkg.ErrorHandler(w, http.StatusNotFound)
 			return
 		}
 
-		// Формируем данные для шаблона
-		tmplData := models.TmplData{
-			Post:       post,
-			Categories: []string{"Fantasy", "Drama", "Comedy", "Adventure", "Romance"},
-			User:       models.User{}, // Вы можете передать реального пользователя
+		// Define available categories
+		categories := []string{"Fantasy", "Drama", "Comedy", "Adventure", "Romance"}
+
+		// Create a map to track selected categories
+		isSelected := make(map[string]bool)
+		for _, category := range post.Category {
+			isSelected[category] = true
 		}
 
-		// Рендерим HTML-шаблон для редактирования поста
+		// Prepare template data
+		tmplData := models.TmplData{
+			Post:       post,
+			Categories: categories,
+			IsSelected: isSelected,    // Pass the map of selected categories
+			User:       models.User{}, // Pass the current user if needed
+		}
+
+		// Render the edit post template
 		pkg.RenderTemplate(w, "edit_post.html", tmplData)
-
 		return
-
 	}
 
 	if r.Method == http.MethodPost {
-		// Обрабатываем данные формы
+		// Parse the form data
 		err := r.ParseForm()
 		if err != nil {
 			pkg.ErrorHandler(w, http.StatusBadRequest)
 			return
 		}
 
+		// Get the form values
 		title := r.FormValue("title")
 		message := r.FormValue("message")
 		genre := r.Form["category"]
 
+		// If no genres were selected from the form, use the hidden selected genres
 		if len(genre) == 0 {
-			pkg.ErrorHandler(w, http.StatusBadRequest)
-			return
+			genre = r.Form["selected_genres"]
 		}
 
 		user, ok := r.Context().Value(KeyUserType(keyUser)).(models.User)
@@ -126,7 +134,7 @@ func (app *App) EditPostHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Получаем ID поста из URL
+		// Get post ID from URL
 		parts := strings.Split(r.URL.Path, "/")
 		postID, err := strconv.Atoi(parts[3])
 		if err != nil {
@@ -134,7 +142,7 @@ func (app *App) EditPostHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Обновляем пост
+		// Update the post
 		changedPost := models.Post{
 			Id:          int64(postID),
 			Title:       title,
@@ -144,6 +152,7 @@ func (app *App) EditPostHandler(w http.ResponseWriter, r *http.Request) {
 			CreatedTime: time.Now().Format(time.RFC822),
 		}
 
+		// Save the updated post
 		status, err := app.postService.UpdatePost(changedPost)
 		if err != nil {
 			log.Println(err)
@@ -157,6 +166,5 @@ func (app *App) EditPostHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		http.Redirect(w, r, "/", http.StatusFound)
-
 	}
 }
