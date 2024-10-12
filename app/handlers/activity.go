@@ -93,7 +93,7 @@ func (app *App) ActivityHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *App) Notifications(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(1234)
+
 	if r.Method != http.MethodGet {
 		pkg.ErrorHandler(w, http.StatusMethodNotAllowed)
 		return
@@ -114,6 +114,7 @@ func (app *App) Notifications(w http.ResponseWriter, r *http.Request) {
 		pkg.ErrorHandler(w, http.StatusInternalServerError)
 		return
 	}
+	fmt.Println(notifications)
 	pkg.RenderTemplate(w, "notification.html", notifications)
 
 }

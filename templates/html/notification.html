@@ -15,7 +15,7 @@
         {{range .}}
         <li class="notification-item">
             <div class="notification-content">
-                <p><strong>{{.Username}}</strong> {{.Action}}: {{.Content}}</p>
+                <p><strong></strong> {{.Content}}</p>
                 <p><small>{{.CreatedAt.Format "02 Jan 2006, 15:04"}}</small></p>
             </div>
             <form action="/notification/delete/{{.ID}}" method="post" class="notification-delete-form">
