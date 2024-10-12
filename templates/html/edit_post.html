@@ -15,23 +15,24 @@
             background-color: #1b1f38; /* Dark background */
             color: #fff; /* Light text color */
             font-family: 'Arial', sans-serif;
-        }
-
-        .container {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            margin: 0;
         }
 
-        .form {
+        .container {
             width: 100%;
             max-width: 600px;
             padding: 20px;
             background-color: #2a2e4c; /* Dark form background */
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(255, 0, 125, 0.5); /* Glowing effect */
-            border: none; /* Remove any white border */
+        }
+
+        .form {
+            width: 100%;
         }
 
         .form-group {
@@ -48,11 +49,17 @@
         .input-field, .textarea-field, .select-field {
             width: 100%;
             padding: 12px;
-            border: none; /* Remove border from input fields */
+            border: none;
             border-radius: 10px;
             background-color: #3b3f61;
             color: #fff; /* White text inside input fields */
             font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .input-field:focus, .textarea-field:focus, .select-field:focus {
+            background-color: #4a5077; /* Slightly lighter background on focus */
+            outline: none; /* Remove default outline */
         }
 
         .textarea-field {
@@ -69,17 +76,29 @@
             font-size: 18px;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(255, 0, 125, 0.7); /* Glowing effect */
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         .btn:hover {
             background-color: #e6006f;
+            transform: scale(1.05); /* Slight grow effect on hover */
         }
 
         h1.page-title {
             text-align: center;
-            color: #fff;
+            color: #ff79c6;
             font-size: 28px;
             margin-bottom: 20px;
+        }
+
+        .form-group select {
+            height: auto;
+        }
+
+        .form-group .select-field option {
+            padding: 8px;
+            background-color: #2a2e4c; /* Match background with form */
+            color: #fff;
         }
     </style>
 </head>

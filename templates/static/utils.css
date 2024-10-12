@@ -110,3 +110,74 @@
     }
 }
 
+/* Container to align Edit and Delete buttons */
+.post__edit-delete {
+    display: flex;
+    justify-content: flex-end; /* Align to the right */
+    gap: 10px; /* Space between buttons */
+    margin-top: 15px; /* Add some space from the post content */
+}
+
+.edit-btn, .delete-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.2s ease;
+}
+
+.edit-btn {
+    background-color: #6272a4; /* Soft blue for edit */
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #7080b5; /* Slightly lighter on hover */
+}
+
+.delete-btn {
+    background-color: #ff5555; /* Red for delete */
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #ff6b6b; /* Lighter red on hover */
+}
+
+/* Additional styles for spacing and layout */
+.main_item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    width: 90%;
+    max-width: 800px;
+    background-color: #2a2e4c;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.post__header, .post__actions, .post__content {
+    margin-bottom: 15px;
+}
+
+.post__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between like/dislike buttons */
+}
+
+.imagesL, .imagesD {
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+.imagesL:hover, .imagesD:hover {
+    transform: scale(1.2);
+}
