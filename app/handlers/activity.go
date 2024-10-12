@@ -10,6 +10,8 @@ import (
 	"strings"
 )
 
+var userID int64
+
 func (app *App) ActivityHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/activity" {
 		pkg.ErrorHandler(w, http.StatusNotFound)
@@ -32,9 +34,8 @@ func (app *App) ActivityHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/sign-in", http.StatusSeeOther)
 		return
 	}
-	fmt.Println(user, "user")
 
-	userID := user.ID
+	userID = user.ID
 
 	createdPosts, err := app.postService.GetPostsByUserID(userID)
 	if err != nil {
@@ -101,13 +102,6 @@ func (app *App) Notifications(w http.ResponseWriter, r *http.Request) {
 	parts := strings.Split(r.URL.Path, "/")
 	postID, err := strconv.Atoi(parts[3])
 	fmt.Println(postID, "postID")
-
-	userID, err := app.userService.GetUserByPostId(postID)
-	if err != nil {
-		log.Println(err)
-		pkg.ErrorHandler(w, http.StatusInternalServerError)
-		return
-	}
 
 	notifications, err := app.userService.GetAllNotificationsByUserId(userID)
 	if err != nil {
