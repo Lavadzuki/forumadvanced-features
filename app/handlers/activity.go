@@ -129,17 +129,20 @@ func (app *App) deleteNotification(w http.ResponseWriter, r *http.Request) {
 	}
 	parts := strings.Split(r.URL.Path, "/")
 
-	notificationID, err := strconv.Atoi(parts[4])
+	notificationID, err := strconv.Atoi(parts[3])
+	fmt.Println(notificationID)
 	if err != nil {
+		fmt.Println(err)
 		pkg.ErrorHandler(w, http.StatusBadRequest)
 		return
 	}
 
 	err = app.userService.DeleteNotification(notificationID)
 	if err != nil {
+
 		pkg.ErrorHandler(w, http.StatusInternalServerError)
 		return
 	}
 
-	http.Redirect(w, r, "/user/notifications", http.StatusSeeOther)
+	http.Redirect(w, r, "/user/notifications/", http.StatusSeeOther)
 }

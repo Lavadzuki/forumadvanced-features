@@ -30,8 +30,8 @@ func (app *App) Run(cfg config.Http) *http.Server {
 		"/github/auth/callback/",
 		"/post/delete/",
 		"/post/edit/",
-		"/user/notification/",
-		"/notifications/",
+		"/user/notifications/",
+		"/notification/delete/",
 	}
 	AddAuthPath(authPaths...)
 
@@ -62,7 +62,8 @@ func (app *App) Run(cfg config.Http) *http.Server {
 	mux.HandleFunc("/welcome/filter/", app.nonAuthorizedMiddleware(app.WelcomeFilterHandler))   // filter
 	mux.HandleFunc("/welcome/comment/", app.nonAuthorizedMiddleware(app.WelcomeCommentHandler)) // comment
 	mux.HandleFunc("/activity", app.ActivityHandler)
-	mux.HandleFunc("/user/notification/", app.authorizedMiddleware(app.Notifications))
+	mux.HandleFunc("/user/notifications/", app.authorizedMiddleware(app.Notifications))
+	mux.HandleFunc("/notification/delete/", app.authorizedMiddleware(app.deleteNotification))
 
 	fs := http.FileServer(http.Dir("./templates/static"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
