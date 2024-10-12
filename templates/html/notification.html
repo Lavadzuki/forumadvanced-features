@@ -6,6 +6,105 @@
     <title>Notifications</title>
     <link rel="stylesheet" href="/static/style.css">
     <link rel="stylesheet" href="/static/utils.css">
+    <style>
+        /* Updated CSS for purple background and style adjustments */
+        body {
+            background-color: #302b63; /* Updated to a purple gradient */
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #282a36;
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #ff79c6; /* A pink color for the title */
+        }
+
+        .notification-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .notification-item {
+            background-color: #44475a;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-content p {
+            margin: 0;
+            font-size: 1rem;
+            color: #f8f8f2;
+        }
+
+        .notification-content small {
+            color: #bd93f9;
+        }
+
+        .notification-delete-form {
+            margin-left: 15px;
+        }
+
+        .btn {
+            background-color: #ff5555;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #ff79c6;
+        }
+
+        .btn:focus {
+            outline: none;
+        }
+
+        /* Back to Main Page Button */
+        .back-btn {
+            background-color: #6272a4;
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            display: inline-block;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background-color: #ff79c6;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container {
+                width: 95%;
+            }
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -15,11 +114,11 @@
         {{range .}}
         <li class="notification-item">
             <div class="notification-content">
-                <p><strong></strong> {{.Content}}</p>
+                <p>{{.Content}}</p>
                 <p><small>{{.CreatedAt.Format "02 Jan 2006, 15:04"}}</small></p>
             </div>
             <form action="/notification/delete/{{.ID}}" method="post" class="notification-delete-form">
-                <button type="submit" class="btn btn-danger">OK</button>
+                <button type="submit" class="btn">OK</button>
             </form>
         </li>
         {{end}}
@@ -27,6 +126,9 @@
     {{else}}
     <p>No notifications available</p>
     {{end}}
+
+    <!-- Back to Main Page Button -->
+    <a href="https://localhost:8000/" class="back-btn">Back to Main Page</a>
 </div>
 </body>
 </html>
