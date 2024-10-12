@@ -31,6 +31,7 @@ type userQuery struct {
 }
 
 func (u *userQuery) GetAllNotifications(userId int64) ([]models.Notification, error) {
+	fmt.Println(userId)
 	var notifications []models.Notification
 	rows, err := u.db.Query("SELECT * FROM notifications WHERE UserTo=?", userId)
 	if err != nil {
@@ -39,12 +40,22 @@ func (u *userQuery) GetAllNotifications(userId int64) ([]models.Notification, er
 	defer rows.Close()
 	for rows.Next() {
 		var notification models.Notification
-		if err := rows.Scan(&notification); err != nil {
-			fmt.Println("72")
+		if err := rows.Scan(
+			&notification.ID,
+			&notification.Action,
+			&notification.Content,
+			&notification.UserTo,
+			&notification.UserFrom,
+			&notification.Action,
+			&notification.Content,
+			&notification.CreatedAt,
+		); err != nil {
+			fmt.Println(err, "err")
 			return nil, err
 		}
 		notifications = append(notifications, notification)
 	}
+	fmt.Println(notifications)
 	return notifications, nil
 }
 
