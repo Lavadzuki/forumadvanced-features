@@ -68,7 +68,7 @@ func (app *App) ReactionHandler(w http.ResponseWriter, r *http.Request) {
 		notofication := models.Notification{
 
 			Action:    "liked your post",
-			Content:   fmt.Sprintf("%s liked your post", user.ID),
+			Content:   fmt.Sprintf("%v liked your post", user.ID),
 			UserFrom:  user.ID,
 			UserTo:    userTo,
 			Username:  user.Username,
@@ -126,7 +126,7 @@ func (app *App) ReactionHandler(w http.ResponseWriter, r *http.Request) {
 		notification := models.Notification{
 
 			Action:    "disliked your post",
-			Content:   fmt.Sprintf("%s disliked your post", user.ID),
+			Content:   fmt.Sprintf("%v disliked your post", user.ID),
 			UserFrom:  user.ID,
 			UserTo:    userTo,
 			Username:  user.Username,
@@ -180,7 +180,7 @@ func (app *App) ReactionHandler(w http.ResponseWriter, r *http.Request) {
 		notification := models.Notification{
 
 			Action:    "liked your comment",
-			Content:   fmt.Sprintf("%s liked your comment", user.ID),
+			Content:   fmt.Sprintf("%v liked your comment", user.ID),
 			UserFrom:  user.ID,
 			UserTo:    userTo,
 			Username:  user.Username,
@@ -210,7 +210,7 @@ func (app *App) ReactionHandler(w http.ResponseWriter, r *http.Request) {
 		notification := models.Notification{
 
 			Action:    "disliked your comment",
-			Content:   fmt.Sprintf("%s disliked your comment", user.ID),
+			Content:   fmt.Sprintf("%v disliked your comment", user.ID),
 			UserFrom:  user.ID,
 			UserTo:    userTo,
 			Username:  user.Username,
