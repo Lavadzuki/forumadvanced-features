@@ -57,28 +57,3 @@ func (app *App) PostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
-
-// func (app *App) DeletePostHandler(w http.ResponseWriter, r *http.Request) {
-// 	switch r.Method {
-// 	case http.MethodDelete:
-// 		// Extract post ID from URL or query parameters
-// 		vars := mux.Vars(r) // Assuming you're using Gorilla Mux for routing
-// 		postID, ok := vars["id"]
-// 		if !ok {
-// 			http.Error(w, "Missing post ID", http.StatusBadRequest)
-// 			return
-// 		}
-
-// 		// Call the DeletePost service with the post ID
-// 		err := app.postService.DeletePost(postID)
-// 		if err != nil {
-// 			http.Error(w, "Failed to delete post", http.StatusInternalServerError)
-// 			return
-// 		}
-
-// 		// If successful, respond with 204 No Content
-// 		w.WriteHeader(http.StatusNoContent)
-// 	default:
-// 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-// 	}
-// }

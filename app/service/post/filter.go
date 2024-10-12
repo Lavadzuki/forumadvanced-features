@@ -1,6 +1,7 @@
 package post
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -49,6 +50,7 @@ func (p postService) GetFilterPosts(genre string, user models.User) (models.Data
 	default:
 		categories, err := p.repository.GetCategory()
 		if err != nil {
+			fmt.Println(err, 53)
 			return models.Data{}, http.StatusInternalServerError
 		}
 
@@ -65,6 +67,7 @@ func (p postService) GetFilterPosts(genre string, user models.User) (models.Data
 		for _, v := range postIds {
 			post, err := p.repository.GetPostById(v)
 			if err != nil {
+				fmt.Println(err, 70)
 				return models.Data{}, http.StatusInternalServerError
 			}
 			posts = append(posts, post)

@@ -234,7 +234,7 @@ func (p postQuery) GetPostById(postId int64) (models.Post, error) {
 	row := p.db.QueryRow(`select post_id,title,message,user_id,username,like,dislike, category, born from posts where post_id=?`, postId)
 	var post models.Post
 	err := row.Scan(&post.Id, &post.Title, &post.Content, &post.Author.ID, &post.Author.Username, &post.Like, &post.Dislike, &post.Category, &post.CreatedTime)
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		return models.Post{}, err
 	}
 	return post, nil
