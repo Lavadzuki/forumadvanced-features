@@ -105,4 +105,3 @@ make stop
 
 - Abolat
 - Nrakishe
-- AKiyazov
